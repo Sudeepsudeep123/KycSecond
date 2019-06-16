@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 progressKYC.setVisibility(View.VISIBLE);
-                btnSubmitKycForm.setVisibility(View.GONE);
+                btnSubmitKycForm.setClickable(false);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
@@ -151,7 +151,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                         if(imgLicensePath!="" && imgLicensePath!=null && !imgLicensePath.equals("") && !imgLicensePath.equals(null)){
                             uploadToServer(LicenseExtension, imgLicensePath, "License");
-
                         }
 //                        if(imgLicenseBackPath!="" && imgLicenseBackPath!=null && !imgLicenseBackPath.equals("") && !imgLicenseBackPath.equals(null)){
 //                            uploadToServer(licenseBackExtension, imgLicenseBackPath, "License Back");
@@ -164,8 +163,6 @@ public class MainActivity extends AppCompatActivity {
                             uploadToServer(voterIdExtension, imgVoterIdtPath, "Voter's Id");
 
                         }
-
-
                     }
 //                    else {
 //                        Log.e("here","here");
@@ -323,26 +320,26 @@ public class MainActivity extends AppCompatActivity {
                         });
                     }
 
-                    if (description == ("License Back") || description.equals("License Back")) {
-                        String id = da.getId();
-                        kycInterface = ApiClient.getApiClient().create(KycInterface.class);
-                        final Call<ResponseBody> callImage = kycInterface.getImage(Integer.parseInt(id));
-                        Log.e("call Image", callImage.request().toString());
-                        callImage.enqueue(new Callback<ResponseBody>() {
-                            @Override
-                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                                bitmapLicenseBack = BitmapFactory.decodeStream(response.body().byteStream());
-                                searchedItem.set(5, new KycModel(bitmapLicenseBack, "License Back", "his is the section where owners details are available."));
-                                        //progressKYC.setVisibility(View.GONE);
-
-                                buildRecyclerView1();
-                            }
-                            @Override
-                            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                                Log.e("errorInGettingImage", t.getMessage());
-                            }
-                        });
-                    }
+//                    if (description == ("License Back") || description.equals("License Back")) {
+//                        String id = da.getId();
+//                        kycInterface = ApiClient.getApiClient().create(KycInterface.class);
+//                        final Call<ResponseBody> callImage = kycInterface.getImage(Integer.parseInt(id));
+//                        Log.e("call Image", callImage.request().toString());
+//                        callImage.enqueue(new Callback<ResponseBody>() {
+//                            @Override
+//                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                                bitmapLicenseBack = BitmapFactory.decodeStream(response.body().byteStream());
+//                                searchedItem.set(5, new KycModel(bitmapLicenseBack, "License Back", "his is the section where owners details are available."));
+//                                        //progressKYC.setVisibility(View.GONE);
+//
+//                                buildRecyclerView1();
+//                            }
+//                            @Override
+//                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+//                                Log.e("errorInGettingImage", t.getMessage());
+//                            }
+//                        });
+//                    }
 
                     if (description == ("Passport") || description.equals("Passport")) {
                         String id = da.getId();
@@ -354,7 +351,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 bitmapPassport = BitmapFactory.decodeStream(response.body().byteStream());
                                 searchedItem.set(6, new KycModel(bitmapPassport, "Passport", "his is the section where owners details are available."));
-                                        //progressKYC.setVisibility(View.GONE);
+                                //progressKYC.setVisibility(View.GONE);
 
                                 buildRecyclerView1();
                             }
@@ -366,6 +363,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     if (description == ("Voter's Id") || description.equals("Voter's Id")) {
+
                         String id = da.getId();
                         kycInterface = ApiClient.getApiClient().create(KycInterface.class);
                         final Call<ResponseBody> callImage = kycInterface.getImage(Integer.parseInt(id));
@@ -387,6 +385,8 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                 }
+                progressKYC.setVisibility(View.GONE);
+
             }
 
             @Override
@@ -564,28 +564,28 @@ public class MainActivity extends AppCompatActivity {
                                     showImage(bitSignature,"Passport Size Photo");
                                 }
                                 if (p == 2) {
-                                    Bitmap bitSignature = BitmapFactory.decodeResource(getResources(), R.drawable.citizenshipfront);
-                                    showImage(bitSignature,"Citizenship Front");
+                                    Bitmap citizenfront = BitmapFactory.decodeResource(getResources(), R.drawable.citizenfront);
+                                    showImage(citizenfront,"Citizenship Front");
                                 }
                                 if (p == 3) {
-                                    Bitmap bitSignature = BitmapFactory.decodeResource(getResources(), R.drawable.citizenshipfront);
-                                    showImage(bitSignature,"Citizenship Back");
+                                    Bitmap citizenback = BitmapFactory.decodeResource(getResources(), R.drawable.citizenback);
+                                    showImage(citizenback,"Citizenship Back");
                                 }
                                 if (p == 4) {
-                                    Bitmap bitSignature = BitmapFactory.decodeResource(getResources(), R.drawable.citizenshipfront);
-                                    showImage(bitSignature,"License");
+                                    Bitmap liscense = BitmapFactory.decodeResource(getResources(), R.drawable.liscense);
+                                    showImage(liscense,"License");
                                 }
 //                                if (p == 5) {
 //                                    Bitmap bitSignature = BitmapFactory.decodeResource(getResources(), R.drawable.citizenshipfront);
 //                                    showImage(bitSignature,"License back");
 //                                }
                                 if (p == 5) {
-                                    Bitmap bitSignature = BitmapFactory.decodeResource(getResources(), R.drawable.citizenshipfront);
-                                    showImage(bitSignature,"Passport");
+                                    Bitmap bitpassport = BitmapFactory.decodeResource(getResources(), R.drawable.passport);
+                                    showImage(bitpassport,"Passport");
                                 }
                                 if (p == 6) {
-                                    Bitmap bitSignature = BitmapFactory.decodeResource(getResources(), R.drawable.citizenshipfront);
-                                    showImage(bitSignature,"Voter's Id");
+                                    Bitmap voterId = BitmapFactory.decodeResource(getResources(), R.drawable.votersid);
+                                    showImage(voterId,"Voter's Id");
                                 }
                             } catch (Exception e) {
                                 Toast.makeText(MainActivity.this, "Please choose image first", Toast.LENGTH_SHORT).show();
