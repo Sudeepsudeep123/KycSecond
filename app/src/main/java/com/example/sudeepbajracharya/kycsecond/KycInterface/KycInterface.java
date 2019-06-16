@@ -25,6 +25,9 @@ public interface KycInterface {
     @GET("/fineract-provider/api/v1/clients/1771/documents")
     Call<List<DataModel>> getData();
 
+//TODo
+    //make the userId dynamic
+
 
     @Headers({"Fineract-Platform-TenantId: default", "Authorization: Basic QW5kcm9pZHN1OmFzZGxrZndpeGN2MzM0NQ=="})
     @GET("/fineract-provider/api/v1/clients/1771/documents/{documentId}/attachment")

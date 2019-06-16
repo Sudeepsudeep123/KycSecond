@@ -26,6 +26,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.sudeepbajracharya.kycsecond.Adapter.KycAdapter;
+import com.example.sudeepbajracharya.kycsecond.Adapter.UploadAdapter;
 import com.example.sudeepbajracharya.kycsecond.ApiClient.ApiClient;
 import com.example.sudeepbajracharya.kycsecond.KycInterface.KycInterface;
 import com.example.sudeepbajracharya.kycsecond.KycInterface.OnDataItemClickListener;
@@ -56,7 +57,10 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
+    private int counter = 0;
+    private int counterUpload = 0;
     KycAdapter kycAdapter;
+    UploadAdapter uploadAdapter;
     private ArrayList<KycModel> searchedItem;
     List<KycModel> kycModels;
     private RecyclerView itemRecyclerView;
@@ -74,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
     private Bitmap bitmapPhotograph;
     private Bitmap bitmapCitizenshipFront;
     private Bitmap bitmapCitizenshipBack;
-    private Bitmap bitmapLicenseFront;
+    private Bitmap bitmapLicense;
     private Bitmap bitmapLicenseBack;
     private Bitmap bitmapPassport;
     private Bitmap bitmapvoterId;
@@ -83,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
     private String imgPhotoPath = "";
     private String imgCitizenshipPathFront = "";
     private String imgCitizenshipPathBack = "";
-    private String imgLicenseFrontPath = "";
+    private String imgLicensePath = "";
     private String imgLicenseBackPath = "";
     private String imgPassportPath = "";
     private String imgVoterIdtPath = "";
@@ -92,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
     String photoExtension = "";
     String citizenshipFrontExtension = "";
     String citizenshipBackExtension = "";
-    String licenseFrontExtension = "";
+    String LicenseExtension = "";
     String licenseBackExtension = "";
     String passportExtension = "";
     String voterIdExtension = "";
@@ -119,13 +123,16 @@ public class MainActivity extends AppCompatActivity {
         createExampleList();
         buildRecyclerView1();
         getData();
-
+        Log.e("progress","progress");
 
         btnSubmitKycForm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 progressKYC.setVisibility(View.VISIBLE);
+                btnSubmitKycForm.setVisibility(View.GONE);
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
                     if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                         if(imgSignaturePath!="" && imgSignaturePath!=null && !imgSignaturePath.equals("") && !imgSignaturePath.equals(null)) {
                             uploadToServer(SignatureExtension, imgSignaturePath,"client Signature");
@@ -142,14 +149,14 @@ public class MainActivity extends AppCompatActivity {
                             uploadToServer(citizenshipBackExtension, imgCitizenshipPathBack,"Citizenship Back");
 
                         }
-                        if(imgLicenseFrontPath!="" && imgLicenseFrontPath!=null && !imgLicenseFrontPath.equals("") && !imgLicenseFrontPath.equals(null)){
-                            uploadToServer(licenseFrontExtension, imgLicenseFrontPath, "License Front");
+                        if(imgLicensePath!="" && imgLicensePath!=null && !imgLicensePath.equals("") && !imgLicensePath.equals(null)){
+                            uploadToServer(LicenseExtension, imgLicensePath, "License");
 
                         }
-                        if(imgLicenseBackPath!="" && imgLicenseBackPath!=null && !imgLicenseBackPath.equals("") && !imgLicenseBackPath.equals(null)){
-                            uploadToServer(licenseBackExtension, imgLicenseBackPath, "License Back");
-
-                        }
+//                        if(imgLicenseBackPath!="" && imgLicenseBackPath!=null && !imgLicenseBackPath.equals("") && !imgLicenseBackPath.equals(null)){
+//                            uploadToServer(licenseBackExtension, imgLicenseBackPath, "License Back");
+//
+//                        }
                         if(imgPassportPath!="" && imgPassportPath!=null && !imgPassportPath.equals("") && !imgPassportPath.equals(null)){
                             uploadToServer(passportExtension, imgPassportPath, "Passport");
 
@@ -157,12 +164,16 @@ public class MainActivity extends AppCompatActivity {
                             uploadToServer(voterIdExtension, imgVoterIdtPath, "Voter's Id");
 
                         }
+
+
                     }
-                    else {
-                        Log.e("here","here");
-                    }
+//                    else {
+//                        Log.e("here","here");
+//                    }
                 }
                 else {
+                    progressKYC.setVisibility(View.VISIBLE);
+
                     if(imgSignaturePath!="" && imgSignaturePath!=null && !imgSignaturePath.equals("") && !imgSignaturePath.equals(null)) {
                         uploadToServer(SignatureExtension, imgSignaturePath,"client Signature");
                     }
@@ -178,26 +189,26 @@ public class MainActivity extends AppCompatActivity {
                         uploadToServer(citizenshipBackExtension, imgCitizenshipPathBack,"Citizenship Back");
 
                     }
-                    if(imgLicenseFrontPath!="" && imgLicenseFrontPath!=null && !imgLicenseFrontPath.equals("") && !imgLicenseFrontPath.equals(null)){
-                        uploadToServer(licenseFrontExtension, imgLicenseFrontPath, "License Front");
+                    if(imgLicensePath!="" && imgLicensePath!=null && !imgLicensePath.equals("") && !imgLicensePath.equals(null)){
+                        uploadToServer(LicenseExtension, imgLicensePath, "License");
 
                     }
-                    if(imgLicenseBackPath!="" && imgLicenseBackPath!=null && !imgLicenseBackPath.equals("") && !imgLicenseBackPath.equals(null)){
-                        uploadToServer(licenseBackExtension, imgLicenseBackPath, "License Back");
-
-                    }
+//                    if(imgLicenseBackPath!="" && imgLicenseBackPath!=null && !imgLicenseBackPath.equals("") && !imgLicenseBackPath.equals(null)){
+//                        uploadToServer(licenseBackExtension, imgLicenseBackPath, "License Back");
+//
+//                    }
                     if(imgPassportPath!="" && imgPassportPath!=null && !imgPassportPath.equals("") && !imgPassportPath.equals(null)){
                         uploadToServer(passportExtension, imgPassportPath, "Passport");
 
                     }if(imgVoterIdtPath!="" && imgVoterIdtPath!=null && !imgVoterIdtPath.equals("") && !imgVoterIdtPath.equals(null)){
                         uploadToServer(voterIdExtension, imgVoterIdtPath, "Voter's Id");
-
                     }
-                }
-                progressKYC.setVisibility(View.GONE);
 
+                }
             }
         });
+
+
     }
 
     private void getData() {
@@ -209,9 +220,9 @@ public class MainActivity extends AppCompatActivity {
                 dataModelList = response.body();
                 for (DataModel da:dataModelList) {
                     Log.e("Description", da.getDescription() + "    description");
-                        description = da.getDescription();
+                    description = da.getDescription();
 
-                        if (description == ("client signature") || description.equals("client signature")) {
+                    if (description == ("client signature") || description.equals("client signature")) {
                             String id = da.getId();
                             kycInterface = ApiClient.getApiClient().create(KycInterface.class);
                             final Call<ResponseBody> callImage = kycInterface.getImage(Integer.parseInt(id));
@@ -221,9 +232,6 @@ public class MainActivity extends AppCompatActivity {
                                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                     bitmapSignature = BitmapFactory.decodeStream(response.body().byteStream());
                                     searchedItem.set(0, new KycModel(bitmapSignature, "Signature", "his is the section where owners details are available."));
-                                    Log.e("here", "changeImage");
-                                    progressKYC.setVisibility(View.GONE);
-
                                     buildRecyclerView1();
                                 }
                                 @Override
@@ -243,9 +251,6 @@ public class MainActivity extends AppCompatActivity {
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 bitmapPhotograph = BitmapFactory.decodeStream(response.body().byteStream());
                                 searchedItem.set(1, new KycModel(bitmapPhotograph, "Photo", "his is the section where owners details are available."));
-                                Log.e("here", "changeImage");
-                                progressKYC.setVisibility(View.GONE);
-
                                 buildRecyclerView1();
                             }
                             @Override
@@ -254,7 +259,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                     }
-
 
                     if (description == ("Citizenship") || description.equals("Citizenship")) {
                         String id = da.getId();
@@ -266,8 +270,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 bitmapCitizenshipFront = BitmapFactory.decodeStream(response.body().byteStream());
                                 searchedItem.set(2, new KycModel(bitmapCitizenshipFront, "Citizenship", "his is the section where owners details are available."));
-                                Log.e("here", "changeImage");
-                                        progressKYC.setVisibility(View.GONE);
+                                progressKYC.setVisibility(View.GONE);
 
                                 buildRecyclerView1();
                             }
@@ -288,8 +291,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 bitmapCitizenshipBack = BitmapFactory.decodeStream(response.body().byteStream());
                                 searchedItem.set(3, new KycModel(bitmapCitizenshipBack, "Citizenship Back", "his is the section where owners details are available."));
-                                Log.e("here", "changeImage");
-                                        progressKYC.setVisibility(View.GONE);
+                                //progressKYC.setVisibility(View.GONE);
 
                                 buildRecyclerView1();
                             }
@@ -300,8 +302,7 @@ public class MainActivity extends AppCompatActivity {
                         });
                     }
 
-
-                    if (description == ("License Front") || description.equals("License Front")) {
+                    if (description == ("License") || description.equals("License")) {
                         String id = da.getId();
                         kycInterface = ApiClient.getApiClient().create(KycInterface.class);
                         final Call<ResponseBody> callImage = kycInterface.getImage(Integer.parseInt(id));
@@ -309,10 +310,9 @@ public class MainActivity extends AppCompatActivity {
                         callImage.enqueue(new Callback<ResponseBody>() {
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                                bitmapLicenseFront = BitmapFactory.decodeStream(response.body().byteStream());
-                                searchedItem.set(4, new KycModel(bitmapLicenseFront, "License Front", "his is the section where owners details are available."));
-                                Log.e("here", "changeImage");
-                                        progressKYC.setVisibility(View.GONE);
+                                bitmapLicense = BitmapFactory.decodeStream(response.body().byteStream());
+                                searchedItem.set(4, new KycModel(bitmapLicense, "License", "his is the section where owners details are available."));
+                                //progressKYC.setVisibility(View.GONE);
 
                                 buildRecyclerView1();
                             }
@@ -333,8 +333,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 bitmapLicenseBack = BitmapFactory.decodeStream(response.body().byteStream());
                                 searchedItem.set(5, new KycModel(bitmapLicenseBack, "License Back", "his is the section where owners details are available."));
-                                Log.e("here", "changeImage");
-                                        progressKYC.setVisibility(View.GONE);
+                                        //progressKYC.setVisibility(View.GONE);
 
                                 buildRecyclerView1();
                             }
@@ -344,7 +343,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                     }
-
 
                     if (description == ("Passport") || description.equals("Passport")) {
                         String id = da.getId();
@@ -356,8 +354,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 bitmapPassport = BitmapFactory.decodeStream(response.body().byteStream());
                                 searchedItem.set(6, new KycModel(bitmapPassport, "Passport", "his is the section where owners details are available."));
-                                Log.e("here", "changeImage");
-                                        progressKYC.setVisibility(View.GONE);
+                                        //progressKYC.setVisibility(View.GONE);
 
                                 buildRecyclerView1();
                             }
@@ -367,7 +364,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                     }
-
 
                     if (description == ("Voter's Id") || description.equals("Voter's Id")) {
                         String id = da.getId();
@@ -379,7 +375,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 bitmapvoterId = BitmapFactory.decodeStream(response.body().byteStream());
                                 searchedItem.set(7, new KycModel(bitmapvoterId, "Voter's Id", "his is the section where owners details are available."));
-                                progressKYC.setVisibility(View.GONE);
+                                //progressKYC.setVisibility(View.GONE);
 
                                 buildRecyclerView1();
                             }
@@ -390,8 +386,6 @@ public class MainActivity extends AppCompatActivity {
                         });
                     }
 
-
-
                 }
             }
 
@@ -400,6 +394,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("failure", t.getMessage());
             }
         });
+
     }
 
     private void uploadToServer(String extension, String filePath, String Description) {
@@ -415,6 +410,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<UploadModel> call, Response<UploadModel> response) {
                 Toast.makeText(MainActivity.this, "Success " + response.message(), Toast.LENGTH_LONG).show();
+                counterUpload++;
+                if(counterUpload == UploadAdapter.count && counter!=0){
+                    //Toast.makeText(MainActivity.this, "Uploaded: " + counterUpload +"=" + counter, Toast.LENGTH_SHORT).show();
+
+                   //Todo
+                   //    Redirect after uload is complete
+                    progressKYC.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -424,7 +427,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
     private void buildRecyclerView1() {
         itemRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
@@ -433,33 +435,86 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataClick(KycModel data, int position) {
                 if(position == 0 && (bitmapSignature==null)) {
-                    p = position;
-                    selectImage();
-                }if(position == 1 && (bitmapPhotograph==null)) {
-                    p = position;
-                    selectImage();
-                } if(position == 2 && (bitmapCitizenshipFront==null)) {
-                    p = position;
-                    selectImage();
-                } if(position == 3 && (bitmapCitizenshipBack==null)) {
-                    p = position;
-                    selectImage();
-                } if(position == 4 && (bitmapLicenseFront==null)) {
-                    p = position;
-                    selectImage();
-                } if(position == 5 && (bitmapLicenseBack==null)) {
-                    p = position;
-                    selectImage();
-                } if(position == 6 && (bitmapPassport==null)) {
-                    p = position;
-                    selectImage();
-                } if(position == 7 && (bitmapvoterId==null)) {
+
                     p = position;
                     selectImage();
                 }
-                else {
-                    Toast.makeText(MainActivity.this, "Cannot change picture", Toast.LENGTH_SHORT).show();
+               
+               else if(position == 1 && (bitmapPhotograph==null)) {
+                    p = position;
+                    selectImage();
+                } 
+                
+               else if(position == 2 && (bitmapCitizenshipFront==null)) {
+                    p = position;
+                    selectImage();
+                } 
+                
+                else if(position == 3 && (bitmapCitizenshipBack==null)) {
+                    p = position;
+                    selectImage();
+                } 
+                
+               else if(position == 4 && (bitmapLicense==null)) {
+                    p = position;
+                    selectImage();
+                } 
+                
+//                else if(position == 5 && (bitmapLicenseBack==null)) {
+//                    p = position;
+//                    selectImage();
+//                } 
+                
+               else if(position == 5 && (bitmapPassport==null)) {
+                    p = position;
+                    selectImage();
+                } 
+                
+               else if(position == 6 && (bitmapvoterId==null)) {
+                    p = position;
+                    selectImage();
                 }
+
+               else {
+                   if(position == 0 && (bitmapSignature!=null)){
+                       showImage(bitmapSignature,"Signature");
+                   }
+                    if(position == 1 && (bitmapPhotograph!=null)) {
+                      showImage(bitmapPhotograph,"Passport Size Photo");
+                   }
+
+                    if(position == 2 && (bitmapCitizenshipFront!=null)) {
+                       showImage(bitmapCitizenshipFront,"Citizenship Front");
+                   }
+
+                   if(position == 3 && (bitmapCitizenshipBack!=null)) {
+                       showImage(bitmapCitizenshipBack,"Citizenship Back");
+
+                   }
+
+                   if(position == 4 && (bitmapLicense!=null)) {
+                       showImage(bitmapLicense,"License");
+
+                   }
+
+//                   if(position == 5 && (bitmapLicenseBack!=null)) {
+//                       showImage(bitmapLicenseBack,"License Back");
+//                   }
+
+                   if(position == 5 && (bitmapPassport!=null)) {
+                       showImage(bitmapPassport,"Passport");
+
+                   }
+
+                   if(position == 6 && (bitmapvoterId!=null)) {
+
+                       showImage(bitmapvoterId,"Voter's Id");
+                   }
+
+
+                   // Toast.makeText(MainActivity.this, "Cannot change picture", Toast.LENGTH_SHORT).show();
+                }
+                
             }
         });
         itemRecyclerView.setLayoutManager(mLayoutManager);
@@ -480,12 +535,18 @@ public class MainActivity extends AppCompatActivity {
                 builder.setItems(options, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int item) {
+
+
                         if (options[item].equals("Take Photo")) {
+                            counter++;
                             dialog.dismiss();
                             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                             startActivityForResult(intent, PICK_IMAGE_CAMERA);
-                        } else if (options[item].equals("Choose From Gallery")) {
+                        }
+
+                        else if (options[item].equals("Choose From Gallery")) {
                             dialog.dismiss();
+                            counter++;
                             Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                             startActivityForResult(pickPhoto, PICK_IMAGE_GALLERY);
 
@@ -495,17 +556,37 @@ public class MainActivity extends AppCompatActivity {
                             try {
 
                                 if (p == 0) {
-                                    showImage();
+                                    Bitmap bitSignature = BitmapFactory.decodeResource(getResources(), R.drawable.sample_signature);
+                                    showImage(bitSignature,"Signature");
                                 }
                                 if (p == 1) {
-                                    showImage();
+                                    Bitmap bitSignature = BitmapFactory.decodeResource(getResources(), R.drawable.pp_photo);
+                                    showImage(bitSignature,"Passport Size Photo");
                                 }
                                 if (p == 2) {
-                                    showImage();
+                                    Bitmap bitSignature = BitmapFactory.decodeResource(getResources(), R.drawable.citizenshipfront);
+                                    showImage(bitSignature,"Citizenship Front");
                                 }
-//                                if (p == 3) {
-//                                    showImage(bitmapCitizenshipBack);
+                                if (p == 3) {
+                                    Bitmap bitSignature = BitmapFactory.decodeResource(getResources(), R.drawable.citizenshipfront);
+                                    showImage(bitSignature,"Citizenship Back");
+                                }
+                                if (p == 4) {
+                                    Bitmap bitSignature = BitmapFactory.decodeResource(getResources(), R.drawable.citizenshipfront);
+                                    showImage(bitSignature,"License");
+                                }
+//                                if (p == 5) {
+//                                    Bitmap bitSignature = BitmapFactory.decodeResource(getResources(), R.drawable.citizenshipfront);
+//                                    showImage(bitSignature,"License back");
 //                                }
+                                if (p == 5) {
+                                    Bitmap bitSignature = BitmapFactory.decodeResource(getResources(), R.drawable.citizenshipfront);
+                                    showImage(bitSignature,"Passport");
+                                }
+                                if (p == 6) {
+                                    Bitmap bitSignature = BitmapFactory.decodeResource(getResources(), R.drawable.citizenshipfront);
+                                    showImage(bitSignature,"Voter's Id");
+                                }
                             } catch (Exception e) {
                                 Toast.makeText(MainActivity.this, "Please choose image first", Toast.LENGTH_SHORT).show();
                             }
@@ -523,14 +604,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void showImage() {
-        Log.e("here", "here");
+    private void showImage(Bitmap b, String title) {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
         View mView = getLayoutInflater().inflate(R.layout.popup_image, null);
-        mBuilder.setTitle("Signature");
+        mBuilder.setTitle(title);
         ImageView imgSignature = mView.findViewById(R.id.imgSignature);
-        imgSignature.setImageResource(R.drawable.sample_signature);
-        //imgSignature.setImageBitmap(bitmap);
+        //imgSignature.setImageResource(R.drawable.sample_signature);
+        imgSignature.setImageBitmap(b);
         mBuilder.setView(mView);
         final AlertDialog dialog = mBuilder.create();
         dialog.show();
@@ -552,7 +632,7 @@ public class MainActivity extends AppCompatActivity {
                     imgSignaturePath = getRealPathFromURI(selectedImage);
 
                     searchedItem.set(0, new KycModel(bitmapSignature, "Signature", "This is the section where owners Post his/her signature."));
-                    buildRecyclerView1();
+                    buildRecyclerView();
                 }
 
                 if (p == 1) {
@@ -561,7 +641,7 @@ public class MainActivity extends AppCompatActivity {
                     imgPhotoPath = getRealPathFromURI(selectedImage);
 
                     searchedItem.set(1, new KycModel(bitmapPhotograph, "Photograph", "This is the section where owners Post his/her Photograph."));
-                    buildRecyclerView1();
+                    buildRecyclerView();
                 }
                 if (p == 2) {
                     bitmapCitizenshipBack = (Bitmap) data.getExtras().get("data");
@@ -570,49 +650,49 @@ public class MainActivity extends AppCompatActivity {
                     imgCitizenshipPathFront = getRealPathFromURI(selectedImage);
 
                     searchedItem.set(2, new KycModel(bitmapCitizenshipBack, "Citizenship Front", "This is the section where owners Post his/her Citizenship Front Picture."));
-                    buildRecyclerView1();
+                    buildRecyclerView();
                 }
                 if (p == 3) {
                     bitmapCitizenshipBack = (Bitmap) data.getExtras().get("data");
                     bitmapCitizenshipBack.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
                     imgCitizenshipPathBack = getRealPathFromURI(selectedImage);
                     searchedItem.set(3, new KycModel(bitmapCitizenshipBack, "Citizenship Back", "This is the section where owners Post his/her Citizenship Back Picture"));
-                    buildRecyclerView1();
+                    buildRecyclerView();
                 }
-                //license front
+                //License
                 if (p == 4) {
-                    bitmapLicenseFront = (Bitmap) data.getExtras().get("data");
-                    bitmapLicenseFront.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
-                    imgLicenseFrontPath = getRealPathFromURI(selectedImage);
-                    searchedItem.set(4, new KycModel(bitmapLicenseFront, "License Front", "This is the section where owners Post his/her License Front Picture"));
-                    buildRecyclerView1();
+                    bitmapLicense = (Bitmap) data.getExtras().get("data");
+                    bitmapLicense.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
+                    imgLicensePath = getRealPathFromURI(selectedImage);
+                    searchedItem.set(4, new KycModel(bitmapLicense, "License", "This is the section where owners Post his/her License Picture"));
+                    buildRecyclerView();
                 }
                 //license back
-                if (p == 5) {
-                    System.out.println("in p5");
-                    bitmapLicenseBack = (Bitmap) data.getExtras().get("data");
-                    bitmapLicenseBack.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
-                    imgLicenseBackPath = getRealPathFromURI(selectedImage);
-                    searchedItem.set(5, new KycModel(bitmapLicenseBack, "License Back", "This is the section where owners Post his/her License Back Picture"));
-                    buildRecyclerView1();
-                }
+//                if (p == 5) {
+//                    System.out.println("in p5");
+//                    bitmapLicenseBack = (Bitmap) data.getExtras().get("data");
+//                    bitmapLicenseBack.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
+//                    imgLicenseBackPath = getRealPathFromURI(selectedImage);
+//                    searchedItem.set(5, new KycModel(bitmapLicenseBack, "License Back", "This is the section where owners Post his/her License Back Picture"));
+//                    buildRecyclerView1();
+//                }
                 //passport
-                if (p == 6) {
+                if (p == 5) {
                     System.out.println("in p6");
                     bitmapPassport = (Bitmap) data.getExtras().get("data");
                     bitmapPassport.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
                     imgPassportPath = getRealPathFromURI(selectedImage);
                     searchedItem.set(6, new KycModel(bitmapPassport, "Passport", "This is the section where owners Post his/her Passport Picture"));
-                    buildRecyclerView1();
+                    buildRecyclerView();
                 }
                 //voter's Id
-                if (p == 7) {
+                if (p == 6) {
                     System.out.println("in p6");
                     bitmapvoterId = (Bitmap) data.getExtras().get("data");
                     bitmapvoterId.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
                     imgVoterIdtPath = getRealPathFromURI(selectedImage);
                     searchedItem.set(6, new KycModel(bitmapvoterId, "Voter's Id", "This is the section where owners Post his/her Voter's Id"));
-                    buildRecyclerView1();
+                    buildRecyclerView();
                 }
 
                 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
@@ -663,7 +743,7 @@ public class MainActivity extends AppCompatActivity {
                     imgSignaturePath = getRealPathFromURI(selectedImage);
                     SignatureExtension = imgSignaturePath.substring(imgSignaturePath.lastIndexOf("."));
                     searchedItem.set(0, new KycModel(bitmapSignature, "Signature", "This is the section where owners Post his/her signature."));
-                    buildRecyclerView1();
+                    buildRecyclerView();
                 }
                 //Photograph
                 if (p == 1) {
@@ -673,7 +753,7 @@ public class MainActivity extends AppCompatActivity {
                     photoExtension = imgPhotoPath.substring(imgPhotoPath.lastIndexOf("."));
                     Log.e("Path of p1", imgPhotoPath);
                     searchedItem.set(1, new KycModel(bitmapPhotograph, "Photograph", "This is the section where owners Post his/her Photograph"));
-                    buildRecyclerView1();
+                    buildRecyclerView();
                 }
                 //citizenship front
                 if (p == 2) {
@@ -686,7 +766,7 @@ public class MainActivity extends AppCompatActivity {
 
                     Log.e("Path of p2", imgCitizenshipPathFront);
                     searchedItem.set(2, new KycModel(bitmapCitizenshipFront, "Citizenship Front", "This is the section where owners Post his/her Citizenship front picture"));
-                    buildRecyclerView1();
+                    buildRecyclerView();
                 }
                 //citizenship back
                 if (p == 3) {
@@ -699,36 +779,36 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "here", Toast.LENGTH_SHORT).show();
                     Log.e("Path of p3", imgCitizenshipPathBack);
                     searchedItem.set(3, new KycModel(bitmapCitizenshipBack, "Citizenship Back", "This is the section where owners Post his/her Citizenship back picture"));
-                    buildRecyclerView1();
+                    buildRecyclerView();
                 }
-                //license front
+                //License
                 if (p == 4) {
                     Toast.makeText(this, "here second", Toast.LENGTH_SHORT).show();
                     System.out.println("in p4");
-                    bitmapLicenseFront = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
-                    bitmapLicenseFront.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
-                    imgLicenseFrontPath = getRealPathFromURI(selectedImage);
-                    licenseFrontExtension = imgLicenseFrontPath.substring(imgLicenseFrontPath.lastIndexOf("."));
+                    bitmapLicense = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                    bitmapLicense.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
+                    imgLicensePath = getRealPathFromURI(selectedImage);
+                    LicenseExtension = imgLicensePath.substring(imgLicensePath.lastIndexOf("."));
 
-                    Log.e("Path of p4", imgLicenseFrontPath);
-                    searchedItem.set(4, new KycModel(bitmapLicenseFront, "License Front", "This is the section where owners Post his/her License front picture."));
-                    buildRecyclerView1();
+                    Log.e("Path of p4", imgLicensePath);
+                    searchedItem.set(4, new KycModel(bitmapLicense, "License", "This is the section where owners Post his/her License picture."));
+                    buildRecyclerView();
                 }
                 //license back
-                if (p == 5) {
-                    System.out.println("in p5");
-                    bitmapLicenseBack = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
-                    bitmapLicenseBack.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
-                    imgLicenseBackPath = getRealPathFromURI(selectedImage);
-                    licenseBackExtension = imgLicenseBackPath.substring(imgLicenseBackPath.lastIndexOf("."));
-
-                    Toast.makeText(this, "here", Toast.LENGTH_SHORT).show();
-                    Log.e("Path of p5", imgLicenseBackPath);
-                    searchedItem.set(5, new KycModel(bitmapLicenseBack, "License Back", "This is the section where owners Post his/her  License back picture."));
-                    buildRecyclerView1();
-                }
+//                if (p == 5) {
+//                    System.out.println("in p5");
+//                    bitmapLicenseBack = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+//                    bitmapLicenseBack.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
+//                    imgLicenseBackPath = getRealPathFromURI(selectedImage);
+//                    licenseBackExtension = imgLicenseBackPath.substring(imgLicenseBackPath.lastIndexOf("."));
+//
+//                    Toast.makeText(this, "here", Toast.LENGTH_SHORT).show();
+//                    Log.e("Path of p5", imgLicenseBackPath);
+//                    searchedItem.set(5, new KycModel(bitmapLicenseBack, "License Back", "This is the section where owners Post his/her  License back picture."));
+//                    buildRecyclerView1();
+//                }
                 //passport
-                if (p == 6) {
+                if (p == 5) {
                     System.out.println("in p6");
                     bitmapPassport = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
                     bitmapPassport.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
@@ -738,10 +818,10 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "here", Toast.LENGTH_SHORT).show();
                     Log.e("Path of p6", imgPassportPath);
                     searchedItem.set(6, new KycModel(bitmapPassport, "Passport", "This is the section where owners Post his/her Passport picture."));
-                    buildRecyclerView1();
+                    buildRecyclerView();
                 }
                 //Voter's ID
-                if (p == 7) {
+                if (p == 6) {
                     System.out.println("in p7");
                     bitmapvoterId = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
                     bitmapvoterId.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
@@ -750,13 +830,103 @@ public class MainActivity extends AppCompatActivity {
 
                     Log.e("Path of p7", imgVoterIdtPath);
                     searchedItem.set(6, new KycModel(bitmapvoterId, "Voter's Id", "This is the section where owners Post his/her Voter's Id"));
-                    buildRecyclerView1();
+                    buildRecyclerView();
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void buildRecyclerView() {
+        itemRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(this);
+        uploadAdapter = new UploadAdapter(searchedItem,getApplicationContext(),counter);
+        uploadAdapter.setOnDataItemClickListener(new OnDataItemClickListener() {
+            @Override
+            public void onDataClick(KycModel data, int position) {
+                if(position == 0 && (bitmapSignature==null)) {
+
+                    p = position;
+                    selectImage();
+                }
+
+                else if(position == 1 && (bitmapPhotograph==null)) {
+                    p = position;
+                    selectImage();
+                }
+
+                else if(position == 2 && (bitmapCitizenshipFront==null)) {
+                    p = position;
+                    selectImage();
+                }
+
+                else if(position == 3 && (bitmapCitizenshipBack==null)) {
+                    p = position;
+                    selectImage();
+                }
+
+                else if(position == 4 && (bitmapLicense==null)) {
+                    p = position;
+                    selectImage();
+                }
+
+                else if(position == 5 && (bitmapPassport==null)) {
+                    p = position;
+                    selectImage();
+                }
+
+                else if(position == 6 && (bitmapvoterId==null)) {
+                    p = position;
+                    selectImage();
+                }
+
+                else {
+                    if(position == 0 && (bitmapSignature!=null)){
+                        showImage(bitmapSignature,"Signature");
+                    }
+                    if(position == 1 && (bitmapPhotograph!=null)) {
+                        showImage(bitmapPhotograph,"Passport Size Photo");
+                    }
+
+                    if(position == 2 && (bitmapCitizenshipFront!=null)) {
+                        showImage(bitmapCitizenshipFront,"Citizenship Front");
+                    }
+
+                    if(position == 3 && (bitmapCitizenshipBack!=null)) {
+                        showImage(bitmapCitizenshipBack,"Citizenship Back");
+
+                    }
+
+                    if(position == 4 && (bitmapLicense!=null)) {
+                        showImage(bitmapLicense,"License");
+
+                    }
+
+//                   if(position == 5 && (bitmapLicenseBack!=null)) {
+//                       showImage(bitmapLicenseBack,"License Back");
+//                   }
+
+                    if(position == 5 && (bitmapPassport!=null)) {
+                        showImage(bitmapPassport,"Passport");
+
+                    }
+
+                    if(position == 6 && (bitmapvoterId!=null)) {
+
+                        showImage(bitmapvoterId,"Voter's Id");
+                    }
+
+
+                    // Toast.makeText(MainActivity.this, "Cannot change picture", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+        itemRecyclerView.setLayoutManager(mLayoutManager);
+        itemRecyclerView.setAdapter(uploadAdapter);
+        uploadAdapter.notifyDataSetChanged();
     }
 
     private void createExampleList() {
@@ -766,8 +936,8 @@ public class MainActivity extends AppCompatActivity {
         searchedItem.add(new KycModel(defaultDraw, "Citizenship Front", "This is the section where owners Post his/her Citizenship front picture"));
         searchedItem.add(new KycModel(defaultDraw, "Citizenship Back", "This is the section where owners Post his/her Citizenship Back picture"));
         
-        searchedItem.add(new KycModel(defaultDraw, "License Front", "This is the section where owners Post his/her License front picture."));
-        searchedItem.add(new KycModel(defaultDraw, "License Back", "This is the section where owners Post his/her  License back picture"));
+        searchedItem.add(new KycModel(defaultDraw, "License", "This is the section where owners Post his/her License picture."));
+//        searchedItem.add(new KycModel(defaultDraw, "License Back", "This is the section where owners Post his/her  License back picture"));
         
         searchedItem.add(new KycModel(defaultDraw, "Passport", "This is the section where owners Post his/her Passport picture."));
         searchedItem.add(new KycModel(defaultDraw, "Voter's Id", "This is the section where owners Post his/her Voter's Id"));
