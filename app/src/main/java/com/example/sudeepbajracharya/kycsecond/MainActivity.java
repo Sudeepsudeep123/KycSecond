@@ -228,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                     bitmapSignature = BitmapFactory.decodeStream(response.body().byteStream());
-                                    searchedItem.set(0, new KycModel(bitmapSignature, "Signature", "his is the section where owners details are available."));
+                                    searchedItem.set(0, new KycModel(bitmapSignature, "Signature", "This is the section where owners Post his/her signature."));
                                     buildRecyclerView1();
                                 }
                                 @Override
@@ -247,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 bitmapPhotograph = BitmapFactory.decodeStream(response.body().byteStream());
-                                searchedItem.set(1, new KycModel(bitmapPhotograph, "Photo", "his is the section where owners details are available."));
+                                searchedItem.set(1, new KycModel(bitmapPhotograph, "Photo", "This is the section where owners Post his/her Photo."));
                                 buildRecyclerView1();
                             }
                             @Override
@@ -266,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 bitmapCitizenshipFront = BitmapFactory.decodeStream(response.body().byteStream());
-                                searchedItem.set(2, new KycModel(bitmapCitizenshipFront, "Citizenship", "his is the section where owners details are available."));
+                                searchedItem.set(2, new KycModel(bitmapCitizenshipFront, "Citizenship", "This is the section where owners Post his/her Citizenship Front Picture."));
                                 progressKYC.setVisibility(View.GONE);
 
                                 buildRecyclerView1();
@@ -287,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 bitmapCitizenshipBack = BitmapFactory.decodeStream(response.body().byteStream());
-                                searchedItem.set(3, new KycModel(bitmapCitizenshipBack, "Citizenship Back", "his is the section where owners details are available."));
+                                searchedItem.set(3, new KycModel(bitmapCitizenshipBack, "Citizenship Back", "This is the section where owners Post his/her Citizenship Back Picture."));
                                 //progressKYC.setVisibility(View.GONE);
 
                                 buildRecyclerView1();
@@ -308,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 bitmapLicense = BitmapFactory.decodeStream(response.body().byteStream());
-                                searchedItem.set(4, new KycModel(bitmapLicense, "License", "his is the section where owners details are available."));
+                                searchedItem.set(4, new KycModel(bitmapLicense, "License", "This is the section where owners Post his/her License."));
                                 //progressKYC.setVisibility(View.GONE);
 
                                 buildRecyclerView1();
@@ -350,7 +350,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 bitmapPassport = BitmapFactory.decodeStream(response.body().byteStream());
-                                searchedItem.set(6, new KycModel(bitmapPassport, "Passport", "his is the section where owners details are available."));
+                                searchedItem.set(6, new KycModel(bitmapPassport, "Passport", "This is the section where owners Post his/her Passport."));
                                 //progressKYC.setVisibility(View.GONE);
 
                                 buildRecyclerView1();
@@ -372,7 +372,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 bitmapvoterId = BitmapFactory.decodeStream(response.body().byteStream());
-                                searchedItem.set(7, new KycModel(bitmapvoterId, "Voter's Id", "his is the section where owners details are available."));
+                                searchedItem.set(7, new KycModel(bitmapvoterId, "Voter's Id", "This is the section where owners Post his/her Voter's Id."));
                                 //progressKYC.setVisibility(View.GONE);
 
                                 buildRecyclerView1();
